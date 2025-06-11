@@ -1,0 +1,17 @@
+imageai
+keras
+keras-resnet
+matplotlib
+h5py
+scipy
+pillow
+opencv-python
+tensorflow
+tqdm
+rasterio
+geopandas
+fastapi
+uvicorn
+streamlit
+python-multipart
+opencv-python
