@@ -113,7 +113,6 @@ class ModelTrainer:
             epochs=50,
             imgsz=512,
             batch=16,
-            name='train',
             project="./runs",
             device='cpu'  # Use CPU
         )
