@@ -72,17 +72,6 @@ def stitch_patches(patches, patch_coords, output_shape, patch_size=512):
         stitched_map[y:y+h, x:x+w] = patch[:h, :w]
     return stitched_map
 
-def calculate_area(segmented_map, pixel_area):
-    classes = np.unique(segmented_map)
-    areas = {}
-    for cls in classes:
-        if cls == 0:
-            continue
-        class_mask = (segmented_map == cls)
-        total_pixels = np.sum(class_mask)
-        areas[cls] = total_pixels * pixel_area
-    return areas
-
 def load_and_process_dataset():
     image_files = sorted(glob(os.path.join(IMG_DIR, "*.png")))
     label_files = sorted(glob(os.path.join(LABEL_DIR, "*.xml")))
@@ -151,7 +140,7 @@ def load_and_process_dataset():
     return stitched_image, stitched_mask, output_shape
 
 def run_streamlit():
-    st.title("Patch Stitching and Area Calculation")
+    st.title("Patch Stitching")
     st.write("Stitching original images and masks from CANNES_TILES_512x512 dataset (Pool)")
     
     stitched_image, stitched_mask, output_shape = load_and_process_dataset()
@@ -159,19 +148,12 @@ def run_streamlit():
     if stitched_image is None or stitched_mask is None:
         return
     
-    st.write(f"Stitched map size: {output_shape[0]}x{output_shape[1]} ({output_shape[0]//512} rows x {output_shape[1]//512} cols)")
-    
     # Display original image and mask side by side
     col1, col2 = st.columns(2)
     with col1:
-        st.image(stitched_image, caption=f"Original Stitched Image ({output_shape[0]//512} rows x {output_shape[1]//512} cols)")
+        st.image(stitched_image, caption=f"Original Stitched Image")
     with col2:
-        st.image(stitched_mask * 255, caption="Segmentation Mask (Pool = white)")
-    
-    pixel_area = 1.0
-    areas = calculate_area(stitched_mask, pixel_area)
-    st.write("Pool Area (m²):")
-    st.json({f"Class {k} (Pool)": v for k, v in areas.items()})
+        st.image(stitched_mask * 255, caption="Mask (Pool = white)")
 
 if __name__ == "__main__":
     run_streamlit()
